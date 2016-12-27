@@ -20,7 +20,7 @@ public final class TransactionContext {
     }
 
     /** スレッドに紐付けられたトランザクション。 */
-    private static ThreadLocal<Map<String, Transaction>> transaction = new ThreadLocal<Map<String, Transaction>>() {
+    private static final ThreadLocal<Map<String, Transaction>> transaction = new ThreadLocal<Map<String, Transaction>>() {
         @Override
         protected Map<String, Transaction> initialValue() {
             return new HashMap<String, Transaction>();
@@ -98,6 +98,9 @@ public final class TransactionContext {
     public static void removeTransaction(String transactionName) {
         Map<String, Transaction> localMap = transaction.get();
         localMap.remove(transactionName);
+        if (localMap.isEmpty()) {
+            transaction.remove();
+        }
     }
 
     /**

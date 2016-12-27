@@ -6,11 +6,14 @@ import org.junit.Test;
 
 import static nablarch.core.transaction.TransactionContext.*;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.util.Map;
+
+import org.hamcrest.CoreMatchers;
 
 import mockit.Deencapsulation;
 import mockit.Mocked;
@@ -26,12 +29,14 @@ public class TransactionContextTest {
     public void setUp() throws Exception {
         final ThreadLocal<Map<String, Transaction>> transaction = Deencapsulation.getField(TransactionContext.class, "transaction");
         transaction.remove();
+        TransactionContext.removeTransaction();
     }
 
     @After
     public void tearDown() throws Exception {
         final ThreadLocal<Map<String, Transaction>> transaction = Deencapsulation.getField(TransactionContext.class, "transaction");
         transaction.remove();
+        TransactionContext.removeTransaction();
     }
 
     @Test
@@ -111,5 +116,22 @@ public class TransactionContextTest {
 
         assertThat("削除されたのでfalse",
                 TransactionContext.containTransaction(TransactionContext.DEFAULT_TRANSACTION_CONTEXT_KEY), is(false));
+    }
+
+    @Test
+    public void testRemoveAndReset() throws Exception {
+        TransactionContext.setTransaction("test-tran", mockTransaction1);
+        TransactionContext.removeTransaction("test-tran");
+
+        try {
+            TransactionContext.getTransaction("test-tran");
+            fail();
+        } catch (IllegalArgumentException ignored) {
+        }
+
+        TransactionContext.setTransaction(DEFAULT_TRANSACTION_CONTEXT_KEY, mockTransaction2);
+        assertThat(TransactionContext.getTransaction(), is(sameInstance(mockTransaction2)));
+
+        TransactionContext.removeTransaction();
     }
 }

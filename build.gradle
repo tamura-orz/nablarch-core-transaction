@@ -29,9 +29,14 @@ dependencies {
 
   // test api
   testCompile 'org.jmockit:jmockit:1.13'
-  testCompile 'junit:junit:4.10'
-  testCompile 'com.nablarch.dev:nablarch-test-support:0.0.5'
-  testRuntime 'com.nablarch.framework:nablarch-core-applog:1.0.1'
+  testCompile 'junit:junit:4.12'
+  testCompile 'com.nablarch.dev:nablarch-test-support:0.0.7'
+  
+  testRuntime "com.nablarch.framework:nablarch-core-applog:${nablarchCoreApplogVersion}"
+  testCompile "com.nablarch.framework:nablarch-core-jdbc:${nablarchCoreJdbcVersion}"
+  testRuntime "com.nablarch.framework:nablarch-common-jdbc:${nablarchCommonJdbcVersion}"
+  testRuntime "com.nablarch.framework:nablarch-core-repository:${nablarchCoreRepositoryVersion}"
+  
   testRuntime 'org.slf4j:slf4j-nop:1.7.12' // for cobertura
 }
 
@@ -98,5 +103,5 @@ tasks.sonarRunner {
 }
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '2.4'
+  gradleVersion = '2.13'
 }

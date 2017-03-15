@@ -1,19 +1,15 @@
 package nablarch.core.transaction;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import static nablarch.core.transaction.TransactionContext.*;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.util.Map;
 
-import org.hamcrest.CoreMatchers;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import mockit.Deencapsulation;
 import mockit.Mocked;
@@ -45,18 +41,18 @@ public class TransactionContextTest {
                 .setTransaction(TransactionContext.DEFAULT_TRANSACTION_CONTEXT_KEY, mockTransaction1);
 
         // 設定したものと同一のオブジェクトが取得できること。
-        assertEquals(mockTransaction1, getTransaction());
+        assertEquals(mockTransaction1, TransactionContext.getTransaction());
 
         // 別名では登録できること。
         TransactionContext.setTransaction("testTran", mockTransaction2);
-        assertEquals(mockTransaction2, getTransaction("testTran"));
+        assertEquals(mockTransaction2, TransactionContext.getTransaction("testTran"));
 
         // 削除
-        removeTransaction("testTran");
+        TransactionContext.removeTransaction("testTran");
 
         // 削除後の取得は、エラーとなる。
         try {
-            getTransaction("testTran");
+            TransactionContext.getTransaction("testTran");
             fail("does not run.");
         } catch (Exception e) {
             assertEquals(
@@ -77,14 +73,14 @@ public class TransactionContextTest {
 
         // 重複登録でエラーとなった場合に、エラー発生前のトランザクションが取得できること。
         assertEquals(mockTransaction1,
-                getTransaction(TransactionContext.DEFAULT_TRANSACTION_CONTEXT_KEY));
+                TransactionContext.getTransaction(TransactionContext.DEFAULT_TRANSACTION_CONTEXT_KEY));
 
         // 不要となったトランザクションを削除
-        removeTransaction();
+        TransactionContext.removeTransaction();
 
         // 削除されていることを確認
         try {
-            getTransaction();
+            TransactionContext.getTransaction();
             fail("does not run.");
         } catch (Exception e) {
             assertEquals(String
@@ -129,7 +125,7 @@ public class TransactionContextTest {
         } catch (IllegalArgumentException ignored) {
         }
 
-        TransactionContext.setTransaction(DEFAULT_TRANSACTION_CONTEXT_KEY, mockTransaction2);
+        TransactionContext.setTransaction(TransactionContext.DEFAULT_TRANSACTION_CONTEXT_KEY, mockTransaction2);
         assertThat(TransactionContext.getTransaction(), is(sameInstance(mockTransaction2)));
 
         TransactionContext.removeTransaction();

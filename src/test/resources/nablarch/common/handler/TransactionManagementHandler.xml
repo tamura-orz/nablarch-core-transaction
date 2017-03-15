@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+データベース接続用の設定ファイル
+-->
+<component-configuration
+    xmlns="http://tis.co.jp/nablarch/component-configuration"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://tis.co.jp/nablarch/component-configuration ../../../../../main/resources/component-configuration.xsd">
+
+    <import file="db-default.xml"/>
+    
+    <component name="TransactionManagementHandler"
+        class="nablarch.common.handler.TransactionManagementHandler">
+        <!-- トランザクションファクトリ -->
+        <property name="transactionFactory">
+            <component
+                class="nablarch.core.db.transaction.JdbcTransactionFactory" />
+        </property>
+        <!-- コミットする例外 -->
+        <property name="transactionCommitExceptions">
+            <list>
+                <value>java.lang.NullPointerException</value>
+                <value>java.lang.IllegalArgumentException</value>
+            </list>
+        </property>
+        <property name="transactionName"
+            value="transactionManagementHandlerTest" />
+    </component>
+
+</component-configuration>

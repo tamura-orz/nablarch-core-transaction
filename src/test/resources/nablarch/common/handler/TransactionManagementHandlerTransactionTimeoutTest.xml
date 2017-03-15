@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component-configuration
+    xmlns="http://tis.co.jp/nablarch/component-configuration"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://tis.co.jp/nablarch/component-configuration ../../../../../main/resources/component-configuration.xsd">
+  <import file="db-default.xml" />
+
+  <!-- データベーストランザクション用設定 -->
+  <component name="transactionFactory" class="nablarch.core.db.transaction.JdbcTransactionFactory">
+    <property name="transactionTimeoutSec" value="3" />
+  </component>
+
+  <component name="transactionManagementHandler"
+      class="nablarch.common.handler.TransactionManagementHandler">
+    <!-- トランザクションファクトリ -->
+    <property name="transactionFactory" ref="transactionFactory" />
+    <property name="transactionName" value="testTransactionName" />
+  </component>
+
+  <!-- データベースコネクションを実現するハンドラ -->
+  <component name="dbConnectionManagementHandler"
+      class="nablarch.common.handler.DbConnectionManagementHandler">
+    <property name="connectionFactory" ref="connectionFactory" />
+    <property name="connectionName" value="testTransactionName" />
+  </component>
+
+  <!--コミットログ実装-->
+  <component name="commitLogger"
+      class="nablarch.core.log.app.BasicCommitLogger">
+    <property name="interval" value="500" />
+  </component>
+
+  <!-- ハンドラキュー構成 -->
+  <list name="handlerQueue">
+    <!-- データベース接続ハンドラ -->
+    <component-ref name="dbConnectionManagementHandler" />
+    <!-- トランザクションマネージャ -->
+    <component-ref name="transactionManagementHandler" />
+  </list>
+
+</component-configuration>

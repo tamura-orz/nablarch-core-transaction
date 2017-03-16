@@ -1,7 +1,6 @@
 package nablarch.core.transaction;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -41,11 +40,11 @@ public class TransactionContextTest {
                 .setTransaction(TransactionContext.DEFAULT_TRANSACTION_CONTEXT_KEY, mockTransaction1);
 
         // 設定したものと同一のオブジェクトが取得できること。
-        assertEquals(mockTransaction1, TransactionContext.getTransaction());
+        assertThat(TransactionContext.getTransaction(), is(mockTransaction1));
 
         // 別名では登録できること。
         TransactionContext.setTransaction("testTran", mockTransaction2);
-        assertEquals(mockTransaction2, TransactionContext.getTransaction("testTran"));
+        assertThat(TransactionContext.getTransaction("testTran"), is(mockTransaction2));
 
         // 削除
         TransactionContext.removeTransaction("testTran");
@@ -55,9 +54,8 @@ public class TransactionContextTest {
             TransactionContext.getTransaction("testTran");
             fail("does not run.");
         } catch (Exception e) {
-            assertEquals(
-                    "specified transaction name is not register in thread local. transaction name = [testTran]",
-                    e.getMessage());
+            assertThat(e.getMessage(),
+                    is("specified transaction name is not register in thread local. transaction name = [testTran]"));
         }
 
         // 同一の名前で登録した場合は、エラーとなる。
@@ -66,14 +64,14 @@ public class TransactionContextTest {
                     .setTransaction(TransactionContext.DEFAULT_TRANSACTION_CONTEXT_KEY, mockTransaction2);
             fail("does not run.");
         } catch (Exception e) {
-            assertEquals(String.format(
+            assertThat(e.getMessage(), is(String.format(
                     "specified transaction name was duplication in thread local. transaction name = [%s]",
-                    TransactionContext.DEFAULT_TRANSACTION_CONTEXT_KEY), e.getMessage());
+                    TransactionContext.DEFAULT_TRANSACTION_CONTEXT_KEY)));
         }
 
         // 重複登録でエラーとなった場合に、エラー発生前のトランザクションが取得できること。
-        assertEquals(mockTransaction1,
-                TransactionContext.getTransaction(TransactionContext.DEFAULT_TRANSACTION_CONTEXT_KEY));
+        assertThat(TransactionContext.getTransaction(TransactionContext.DEFAULT_TRANSACTION_CONTEXT_KEY),
+                is(mockTransaction1));
 
         // 不要となったトランザクションを削除
         TransactionContext.removeTransaction();
@@ -83,10 +81,9 @@ public class TransactionContextTest {
             TransactionContext.getTransaction();
             fail("does not run.");
         } catch (Exception e) {
-            assertEquals(String
-                            .format("specified transaction name is not register in thread local. transaction name = [%s]",
-                                    TransactionContext.DEFAULT_TRANSACTION_CONTEXT_KEY),
-                    e.getMessage());
+            assertThat(e.getMessage(), is(String
+                    .format("specified transaction name is not register in thread local. transaction name = [%s]",
+                            TransactionContext.DEFAULT_TRANSACTION_CONTEXT_KEY)));
         }
     }
 

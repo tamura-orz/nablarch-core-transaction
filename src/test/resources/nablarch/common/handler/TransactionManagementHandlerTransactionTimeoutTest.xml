@@ -19,7 +19,7 @@
 
   <!-- データベースコネクションを実現するハンドラ -->
   <component name="dbConnectionManagementHandler"
-      class="nablarch.common.handler.DbConnectionManagementHandler">
+      class="nablarch.common.handler.ConnectionManagementHandlerInTest">
     <property name="connectionFactory" ref="connectionFactory" />
     <property name="connectionName" value="testTransactionName" />
   </component>

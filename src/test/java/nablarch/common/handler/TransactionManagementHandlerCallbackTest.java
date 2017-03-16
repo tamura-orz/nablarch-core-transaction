@@ -2,7 +2,6 @@ package nablarch.common.handler;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
@@ -86,7 +85,7 @@ public class TransactionManagementHandlerCallbackTest {
             context.handleNext("99");
             fail("can not be executed.");
         } catch (IllegalStateException e) {
-            assertTrue(true);
+            assertThat(true, is(true));
         }
 
         // 異常用のコールバックで設定した値を確認

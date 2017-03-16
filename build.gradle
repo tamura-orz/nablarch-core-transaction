@@ -21,42 +21,35 @@ apply plugin: 'com.nablarch.dev.nablarch-version'
 apply plugin: 'cobertura'
 
 // ビルド時のJavaバージョンを指定する
-sourceCompatibility=JavaVersion.VERSION_1_6
-targetCompatibility=JavaVersion.VERSION_1_6
+sourceCompatibility = JavaVersion.VERSION_1_6
+targetCompatibility = JavaVersion.VERSION_1_6
 
 dependencies {
   compile "com.nablarch.framework:nablarch-core:${nablarchCoreVersion}"
 
   // test api
-  testCompile 'org.jmockit:jmockit:1.13'
+  testCompile 'org.jmockit:jmockit:1.30'
   testCompile 'junit:junit:4.12'
-  testCompile 'com.nablarch.dev:nablarch-test-support:0.0.7'
-  
+
   testRuntime "com.nablarch.framework:nablarch-core-applog:${nablarchCoreApplogVersion}"
   testCompile "com.nablarch.framework:nablarch-core-jdbc:${nablarchCoreJdbcVersion}"
-  testRuntime "com.nablarch.framework:nablarch-common-jdbc:${nablarchCommonJdbcVersion}"
   testRuntime "com.nablarch.framework:nablarch-core-repository:${nablarchCoreRepositoryVersion}"
-  
-  testRuntime 'org.slf4j:slf4j-nop:1.7.12' // for cobertura
+
+  testRuntime 'org.slf4j:slf4j-nop:1.7.24' // for cobertura
 }
 
 test {
 
-  jvmArgs (
-          '-XX:PermSize=32m',
-          '-XX:+UseParallelGC',
-          '-Dfile.encoding=UTF-8',
-          '-XX:-UseSplitVerifier'
+  jvmArgs(
+      '-XX:PermSize=32m',
+      '-XX:+UseParallelGC',
+      '-Xmx62m',
+      '-Xms32m',
+      '-Dfile.encoding=UTF-8',
+      '-XX:-UseSplitVerifier'
   )
 
   ignoreFailures = true
-
-  doFirst {
-    def logDir = new File('log')
-    if (!logDir.exists()) {
-      assert logDir.mkdirs()
-    }
-  }
 
   cobertura {
     coverageSourceDirs = ["${projectDir}/src/main/java/"]
@@ -77,13 +70,14 @@ task generateCoberturaReportByAnt(dependsOn: 'cobertura') {
 
   doLast {
     ant {
-      taskdef(resource: 'tasks.properties', classpath: configurations.cobertura.asPath + ':' + configurations.testRuntime.asPath)
+      taskdef(resource: 'tasks.properties',
+          classpath: configurations.cobertura.asPath + ':' + configurations.testRuntime.asPath)
 
       'cobertura-report'(
-              destdir: coberturaReportDir,
-              datafile: dataFile,
-              srcdir: "${projectDir}/src/main/java/",
-              format: 'xml'
+          destdir: coberturaReportDir,
+          datafile: dataFile,
+          srcdir: "${projectDir}/src/main/java/",
+          format: 'xml'
       )
     }
   }

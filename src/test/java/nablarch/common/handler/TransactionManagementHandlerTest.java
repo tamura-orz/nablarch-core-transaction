@@ -1,16 +1,18 @@
 package nablarch.common.handler;
 
-import mockit.Mocked;
-import mockit.NonStrictExpectations;
-import mockit.Verifications;
+import static org.hamcrest.CoreMatchers.*;
+
 import nablarch.core.transaction.Transaction;
 import nablarch.core.transaction.TransactionFactory;
 import nablarch.fw.ExecutionContext;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import mockit.Expectations;
+import mockit.Mocked;
+import mockit.Verifications;
 
 public class TransactionManagementHandlerTest {
 
@@ -36,14 +38,15 @@ public class TransactionManagementHandlerTest {
     public void test() {
         {
             // 正常系
-            new NonStrictExpectations() {{
+            new Expectations() {{
                 transactionFactory.getTransaction("tran");
                 result = transaction;
                 context.isProcessSucceeded();
                 result = true;
             }};
             
-            assertTrue(target.handleInbound(context).isSuccess());
+            Assert.assertThat(target.handleInbound(context)
+                                    .isSuccess(), is(true));
 
             new Verifications() {{
                 transactionFactory.getTransaction("tran");
@@ -53,7 +56,8 @@ public class TransactionManagementHandlerTest {
                 times = 1;
             }};            
 
-            assertTrue(target.handleOutbound(context).isSuccess());
+            Assert.assertThat(target.handleOutbound(context)
+                                    .isSuccess(), is(true));
             
             new Verifications() {{
                 transaction.commit();
@@ -65,14 +69,15 @@ public class TransactionManagementHandlerTest {
         }
         {
             // 異常系
-            new NonStrictExpectations() {{
+            new Expectations() {{
                 transactionFactory.getTransaction("tran");
                 result = transaction;
                 context.isProcessSucceeded();
                 result = false;
             }};
             
-            assertTrue(target.handleInbound(context).isSuccess());
+            Assert.assertThat(target.handleInbound(context)
+                                    .isSuccess(), is(true));
 
             new Verifications() {{
                 transactionFactory.getTransaction("tran");
@@ -82,7 +87,8 @@ public class TransactionManagementHandlerTest {
                 times = 1;
             }};            
 
-            assertTrue(target.handleOutbound(context).isSuccess());
+            Assert.assertThat(target.handleOutbound(context)
+                                    .isSuccess(), is(true));
             
             new Verifications() {{
                 transaction.commit();
@@ -93,13 +99,15 @@ public class TransactionManagementHandlerTest {
             
         }
         {
-            new NonStrictExpectations() {{
+            new Expectations() {{
                 transactionFactory.getTransaction("tran");
                 result = transaction;
+                minTimes = 0;
             }};
 
             // トランザクション開始前に Outbound が呼ばれた場合
-            assertTrue(target.handleOutbound(context).isSuccess());
+            Assert.assertThat(target.handleOutbound(context)
+                                    .isSuccess(), is(true));
             
             new Verifications() {{
                 transaction.commit();

@@ -15,11 +15,12 @@ cache:
 before_script:
   - echo ${REPO_USER}
   - echo ${DEVELOP_REPO_URL} 
+  - echo ${DEVELOP_REPO_NAME} 
   - echo ${DEPLOY_HOST_URL} 
   - echo ${DEPLOY_REPO_NAME}
   
 script:
-  - ./gradlew uploadArchives -PnablarchRepoUsername=${REPO_USER} -PnablarchRepoPassword=${DEPLOY_PASSWORD} -PnablarchRepoReferenceUrl=${DEVELOP_REPO_URL} -PnablarchRepoDeployUrl=${DEPLOY_HOST_URL} -PnablarchRepoName=${DEPLOY_REPO_NAME} --no-daemon
+  - ./gradlew uploadArchives -PnablarchRepoUsername=${REPO_USER} -PnablarchRepoPassword=${DEPLOY_PASSWORD} -PnablarchRepoReferenceUrl=${DEVELOP_REPO_URL} -PnablarchRepoReferenceName=${DEVELOP_REPO_NAME} -PnablarchRepoDeployUrl=${DEPLOY_HOST_URL} -PnablarchRepoName=${DEPLOY_REPO_NAME} --no-daemon
 
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock

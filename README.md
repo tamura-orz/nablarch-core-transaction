@@ -1,5 +1,7 @@
 # nablarch-core-transaction 
 
+[![Build Status](https://travis-ci.org/tamura-orz/nablarch-core-transaction.svg?branch=develop)](https://travis-ci.org/tamura-orz/nablarch-core-transaction)
+
 ## 依存ライブラリ
 
 本モジュールのコンパイルまたはテストには、下記ライブラリを手動でローカルリポジトリへインストールする必要があります。
